@@ -11,7 +11,7 @@ from bot.helper.ext_utils.bot_utils import update_user_ldata
 def authorize(update, context):
     reply_message = update.message.reply_to_message
     if len(context.args) == 1:
-        id_ = context.args[0]
+        id_ = int(context.args[0])
     elif reply_message:
         id_ = reply_message.from_user.id
     else:
@@ -20,7 +20,7 @@ def authorize(update, context):
         msg = 'Already Authorized!'
     else:
         update_user_ldata(id_, 'is_auth', True)
-        if DB_URI is not None:
+        if DB_URI:
             DbManger().update_user_data(id_)
         msg = 'Authorized'
     sendMessage(msg, context.bot, update.message)
@@ -28,14 +28,14 @@ def authorize(update, context):
 def unauthorize(update, context):
     reply_message = update.message.reply_to_message
     if len(context.args) == 1:
-        id_ = context.args[0]
+        id_ = int(context.args[0])
     elif reply_message:
         id_ = reply_message.from_user.id
     else:
         id_ = update.effective_chat.id
     if id_ not in user_data or user_data[id_].get('is_auth'):
         update_user_ldata(id_, 'is_auth', False)
-        if DB_URI is not None:
+        if DB_URI:
             DbManger().update_user_data(id_)
         msg = 'Unauthorized'
     else:
@@ -54,7 +54,7 @@ def addSudo(update, context):
             msg = 'Already Sudo!'
         else:
             update_user_ldata(id_, 'is_sudo', True)
-            if DB_URI is not None:
+            if DB_URI:
                 DbManger().update_user_data(id_)
             msg = 'Promoted as Sudo'
     else:
@@ -70,7 +70,7 @@ def removeSudo(update, context):
         id_ = reply_message.from_user.id
     if id_ and id_ not in user_data or user_data[id_].get('is_sudo'):
         update_user_ldata(id_, 'is_sudo', False)
-        if DB_URI is not None:
+        if DB_URI:
             DbManger().update_user_data(id_)
         msg = 'Demoted'
     else:
